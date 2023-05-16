@@ -1,10 +1,9 @@
 package fr.rauster;
 
-import java.util.Random;
+import org.jetbrains.annotations.Nullable;
 
 public class Fish extends LivingBeing{
     
-    private final Random r = new Random();
     private final String name;
     private Gender gender;
     private final FishType type;
@@ -13,6 +12,13 @@ public class Fish extends LivingBeing{
         this.name = name;
         this.gender = gender;
         this.type = type;
+    }
+    public Fish(Aquarium aquarium, String name, Gender gender, FishType type, int age, int hp) {
+        super(aquarium, hp);
+        this.name = name;
+        this.gender = gender;
+        this.type = type;
+        this.age = age;
     }
     
     @Override
@@ -24,17 +30,21 @@ public class Fish extends LivingBeing{
         else breed();
         
         if (getType().getSexualityType() == SexualityType.HERMAPHRODITE_WITH_AGE && age == 10) {
-            this.gender = gender.opposite();
+            gender = gender.opposite();
         }
     }
     
     @Override
     protected void breed() {
+        if (isTooPopulated(aquarium.getFishes().size(), Aquarium.MAX_FISH_POPULATION)) return;
         Fish fish = randomFish();
-        if (fish == null || fish == this) return;
-        if (fish.getType() != getType()) return;
-        if (fish.getType().getSexualityType() != SexualityType.OPPORTUNIST_HERMAPHRODITE
-                && fish.getGender() == getGender()) return;
+        if (fish == null) return;
+        if (fish.getGender() == getGender()) {
+            if (getType().getSexualityType() == SexualityType.OPPORTUNIST_HERMAPHRODITE) {
+                gender = gender.opposite();
+            }
+            else return;
+        }
         
         Gender gender = Gender.FEMALE;
         if (r.nextBoolean()) gender = Gender.MALE;
@@ -49,34 +59,26 @@ public class Fish extends LivingBeing{
         }
     }
     private void eatRandomPlant() {
-        Plant randomPlant = null;
+        Plant plant = null;
         if (aquarium.getPlants().size() > 0)
-            randomPlant = aquarium.getPlants().get(r.nextInt(aquarium.getPlants().size()));
-        eat(randomPlant);
-    }
-    private void eatRandomFish() {
-        Fish randomFish = randomFish();
-        while (randomFish.getType() == getType() || randomFish == this) {
-            randomFish = randomFish();
-        }
-        eat(randomFish);
-    }
-    private Fish randomFish(){
-        if (aquarium.getFishes().size() > 0)
-            return aquarium.getFishes().get(r.nextInt(aquarium.getFishes().size()));
-        else return null;
-    }
-    private void eat(Plant plant) {
+            plant = aquarium.getPlants().get(r.nextInt(aquarium.getPlants().size()));
         if (plant == null) return;
         plant.damage(2);
         hp += 3;
     }
-    private void eat(Fish fish) {
-        if (fish == null) return;
-        fish.damage(4);
+    private void eatRandomFish() {
+        Fish fish = randomFish();
+        if (fish == null || fish.getType() == getType() || fish == this) return;
+        fish.damage(6);
         hp += 5;
     }
-    
+    private @Nullable Fish randomFish(){
+        Fish fish = null;
+        if (aquarium.getFishes().size() > 0)
+            fish = aquarium.getFishes().get(r.nextInt(aquarium.getFishes().size()));
+        if (fish == this) return null;
+        return fish;
+    }
     
     public String getName() {
         return name;

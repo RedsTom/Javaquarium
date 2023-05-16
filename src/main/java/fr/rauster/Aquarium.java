@@ -1,37 +1,66 @@
 package fr.rauster;
 
+import fr.rauster.file.AquariumReader;
+import fr.rauster.file.AquariumWriter;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Aquarium {
     
-    Random r = new Random();
+    private final Random r = new Random();
     private final List<LivingBeing> livingBeings = new ArrayList<>();
     private int time;
+    private static final int TOTAL_ITERATIONS = 20;
+    private static final int START_ITERATION = 40;
+    public static final int MAX_FISH_POPULATION = 50;
+    public static final int MAX_PLANT_POPULATION = 30;
+    private AquariumWriter writer = null;
+    private AquariumWriter logWriter = null;
     
     public static void main(String[] args) {
         Aquarium aquarium = new Aquarium();
-        aquarium.startSimulation();
+        aquarium.startSimulation(START_ITERATION, TOTAL_ITERATIONS);
     }
-    public void startSimulation() {
-        addFish(Gender.MALE, FishType.GROUPER);
-        addFish(Gender.FEMALE, FishType.GROUPER);
-        addFish(Gender.MALE, FishType.TUNA);
-        addFish(Gender.FEMALE, FishType.TUNA);
-        addFish(Gender.MALE, FishType.CLOWNFISH);
-        addFish(Gender.FEMALE, FishType.CLOWNFISH);
-        addFish(Gender.MALE, FishType.SOLE);
-        addFish(Gender.FEMALE, FishType.SOLE);
-        addFish(Gender.MALE, FishType.BASS);
-        addFish(Gender.FEMALE, FishType.BASS);
-        addFish(Gender.MALE, FishType.CARP);
-        addFish(Gender.FEMALE, FishType.CARP);
+    
+    public Aquarium() {
+    }
+    public void startSimulation(int start, int iterations) {
+        time = start;
         
-        addPlants(10);
+        if (start == 0) {
+            
+            addFish(Gender.MALE, FishType.GROUPER);
+            addFish(Gender.FEMALE, FishType.GROUPER);
+            addFish(Gender.MALE, FishType.TUNA);
+            addFish(Gender.FEMALE, FishType.TUNA);
+            addFish(Gender.MALE, FishType.CLOWNFISH);
+            addFish(Gender.FEMALE, FishType.CLOWNFISH);
+            addFish(Gender.MALE, FishType.SOLE);
+            addFish(Gender.FEMALE, FishType.SOLE);
+            addFish(Gender.MALE, FishType.BASS);
+            addFish(Gender.FEMALE, FishType.BASS);
+            addFish(Gender.MALE, FishType.CARP);
+            addFish(Gender.FEMALE, FishType.CARP);
+            
+            addPlants(15);
+        }
+        else {
+            setAquariumContent(start);
+        }
         
-        for (int i = 0 ; i < 30 ; i++) {
-            spendTime();
+        try {
+            this.writer = new AquariumWriter("aquarium.fish");
+            this.writer = new AquariumWriter("log.fish");
+            for (int i = 0 ; i < iterations ; i++) {
+                spendTime();
+            }
+            writer.close();
+            logWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
     
@@ -42,8 +71,16 @@ public class Aquarium {
            livingBeing.live();
         }
         
+        try {
+            writer.addFishes(getFishes());
+            writer.addPlants(getPlants());
+            writer.writeLine(time);
+            writer.newLine();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        
         System.out.println("Time "+time+", " + getPlants().size() + " plants and "+getFishes().size() + " fishes");
-//        getFishes().forEach(System.out::println);
     }
     
     public void addFish(String name, Gender gender, FishType type) {
@@ -51,8 +88,7 @@ public class Aquarium {
         livingBeings.add(fish);
     }
     public void addFish(Gender gender, FishType type) {
-        Fish fish = new Fish(this, String.valueOf(r.nextInt(10000)), gender, type);
-        livingBeings.add(fish);
+        addFish(String.valueOf(r.nextInt(100000)), gender, type);
     }
     private void addPlants(int number) {
         for (int j = 0 ; j < number ; j++) {
@@ -69,6 +105,15 @@ public class Aquarium {
     public void removeBeing(LivingBeing livingBeing) {
         livingBeings.remove(livingBeing);
     }
+    public void setAquariumContent(int state) {
+        try (AquariumReader reader = new AquariumReader(this, "aquarium.fish")) {
+            livingBeings.clear();
+            livingBeings.addAll(reader.read(state));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     
     
     public List<Fish> getFishes(){
