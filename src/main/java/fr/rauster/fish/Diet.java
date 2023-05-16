@@ -1,4 +1,4 @@
-package fr.rauster;
+package fr.rauster.fish;
 
 public enum Diet {
     HERBIVORE,

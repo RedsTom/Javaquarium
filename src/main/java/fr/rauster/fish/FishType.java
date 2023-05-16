@@ -1,4 +1,4 @@
-package fr.rauster;
+package fr.rauster.fish;
 
 public enum FishType {
     GROUPER(Diet.CARNIVORE, SexualityType.HERMAPHRODITE_WITH_AGE), //mérou

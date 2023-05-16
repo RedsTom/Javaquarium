@@ -1,8 +1,11 @@
-package fr.rauster;
+package fr.rauster.fish;
 
+import fr.rauster.Aquarium;
+import fr.rauster.LivingBeing;
+import fr.rauster.Plant;
 import org.jetbrains.annotations.Nullable;
 
-public class Fish extends LivingBeing{
+public class Fish extends LivingBeing {
     
     private final String name;
     private Gender gender;
@@ -49,6 +52,7 @@ public class Fish extends LivingBeing{
         Gender gender = Gender.FEMALE;
         if (r.nextBoolean()) gender = Gender.MALE;
         aquarium.addFish(gender, getType());
+        aquarium.log(getName() + " and " + fish.getName() + " bred and gave birth to a new " + getType().toString().toLowerCase());
     }
     public void eat() {
         if (getType().getDiet() == Diet.HERBIVORE) {
@@ -65,12 +69,14 @@ public class Fish extends LivingBeing{
         if (plant == null) return;
         plant.damage(2);
         hp += 3;
+        aquarium.log(getName() + " ate a plant");
     }
     private void eatRandomFish() {
         Fish fish = randomFish();
         if (fish == null || fish.getType() == getType() || fish == this) return;
         fish.damage(6);
         hp += 5;
+        aquarium.log(getName() + " ate " + fish.getName());
     }
     private @Nullable Fish randomFish(){
         Fish fish = null;

@@ -1,6 +1,6 @@
 package fr.rauster.file;
 
-import fr.rauster.Fish;
+import fr.rauster.fish.Fish;
 import fr.rauster.Plant;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,24 +18,20 @@ public class AquariumWriter extends BufferedWriter {
     
     public void addFishes(List<Fish> fishes) {
         JSONArray array = new JSONArray();
-        fishes.forEach(f -> {
-                    array.put(new JSONObject()
-                            .put("name", f.getName())
-                            .put("gender", f.getGender())
-                            .put("type", f.getType())
-                            .put("hp", f.getHp())
-                            .put("age", f.getAge()));
-        });
+        fishes.forEach(f -> array.put(new JSONObject()
+                .put("name", f.getName())
+                .put("gender", f.getGender())
+                .put("type", f.getType())
+                .put("hp", f.getHp())
+                .put("age", f.getAge())));
         line.put("fishes", array);
     }
     
     public void addPlants(List<Plant> plants) {
         JSONArray array = new JSONArray();
-        plants.forEach(p -> {
-            array.put(new JSONObject()
-                    .put("hp", p.getHp())
-                    .put("age", p.getAge()));
-        });
+        plants.forEach(p -> array.put(new JSONObject()
+                .put("hp", p.getHp())
+                .put("age", p.getAge())));
         line.put("plants", array);
     }
     

@@ -1,9 +1,9 @@
 package fr.rauster.file;
 
 import fr.rauster.Aquarium;
-import fr.rauster.Fish;
-import fr.rauster.FishType;
-import fr.rauster.Gender;
+import fr.rauster.fish.Fish;
+import fr.rauster.fish.FishType;
+import fr.rauster.fish.Gender;
 import fr.rauster.LivingBeing;
 import fr.rauster.Plant;
 import org.json.JSONArray;

@@ -2,6 +2,10 @@ package fr.rauster;
 
 import fr.rauster.file.AquariumReader;
 import fr.rauster.file.AquariumWriter;
+import fr.rauster.file.Logger;
+import fr.rauster.fish.Fish;
+import fr.rauster.fish.FishType;
+import fr.rauster.fish.Gender;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,19 +18,17 @@ public class Aquarium {
     private final List<LivingBeing> livingBeings = new ArrayList<>();
     private int time;
     private static final int TOTAL_ITERATIONS = 20;
-    private static final int START_ITERATION = 40;
+    private static final int START_ITERATION = 0;
     public static final int MAX_FISH_POPULATION = 50;
     public static final int MAX_PLANT_POPULATION = 30;
     private AquariumWriter writer = null;
-    private AquariumWriter logWriter = null;
+    private final Logger logger = new Logger();
     
     public static void main(String[] args) {
         Aquarium aquarium = new Aquarium();
         aquarium.startSimulation(START_ITERATION, TOTAL_ITERATIONS);
     }
     
-    public Aquarium() {
-    }
     public void startSimulation(int start, int iterations) {
         time = start;
         
@@ -53,12 +55,11 @@ public class Aquarium {
         
         try {
             this.writer = new AquariumWriter("aquarium.fish");
-            this.writer = new AquariumWriter("log.fish");
             for (int i = 0 ; i < iterations ; i++) {
                 spendTime();
             }
             writer.close();
-            logWriter.close();
+            logger.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -76,6 +77,7 @@ public class Aquarium {
             writer.addPlants(getPlants());
             writer.writeLine(time);
             writer.newLine();
+            logNewLine();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -115,7 +117,6 @@ public class Aquarium {
     }
     
     
-    
     public List<Fish> getFishes(){
         List<Fish> fishes = new ArrayList<>();
         livingBeings.forEach(lb -> {
@@ -129,5 +130,11 @@ public class Aquarium {
             if (lb instanceof Plant p) plants.add(p);
         });
         return plants;
+    }
+    public void log(String string) {
+        logger.log(string);
+    }
+    public void logNewLine() {
+        logger.newLine();
     }
 }
