@@ -1,11 +1,11 @@
 package fr.rauster.file;
 
 import fr.rauster.Aquarium;
+import fr.rauster.LivingBeing;
+import fr.rauster.Plant;
 import fr.rauster.fish.Fish;
 import fr.rauster.fish.FishType;
 import fr.rauster.fish.Gender;
-import fr.rauster.LivingBeing;
-import fr.rauster.Plant;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AquariumReader extends BufferedReader {
+    
     private final Aquarium aquarium;
     public AquariumReader(Aquarium aquarium, String path) throws FileNotFoundException {
         super(new FileReader(path));
@@ -66,5 +67,5 @@ public class AquariumReader extends BufferedReader {
         }
         return list;
     }
-
+    
 }

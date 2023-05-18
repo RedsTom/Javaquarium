@@ -1,7 +1,7 @@
 package fr.rauster.file;
 
-import fr.rauster.fish.Fish;
 import fr.rauster.Plant;
+import fr.rauster.fish.Fish;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -11,7 +11,8 @@ import java.io.IOException;
 import java.util.List;
 
 public class AquariumWriter extends BufferedWriter {
-    JSONObject line = new JSONObject();
+    
+    final JSONObject line = new JSONObject();
     public AquariumWriter(String path) throws IOException {
         super(new BufferedWriter(new FileWriter(path)));
     }

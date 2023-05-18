@@ -2,14 +2,20 @@ package fr.rauster;
 
 public class Plant extends LivingBeing {
     
-    public Plant(Aquarium aquarium, int hp) {
-        super(aquarium, hp);
+    public Plant(Aquarium aquarium, int age) {
+        this(aquarium, 10, age);
     }
     public Plant(Aquarium aquarium, int hp, int age) {
         super(aquarium, hp);
         this.age = age;
     }
     @Override
+    public String toString() {
+        return "Plant{" +
+                "hp=" + hp +
+                ", age=" + age +
+                '}';
+    }    @Override
     public void live() {
         super.live();
         hp++;
@@ -24,11 +30,5 @@ public class Plant extends LivingBeing {
         aquarium.addPlant(hp);
     }
     
-    @Override
-    public String toString() {
-        return "Plant{" +
-                "hp=" + hp +
-                ", age=" + age +
-                '}';
-    }
+
 }

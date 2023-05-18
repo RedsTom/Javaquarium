@@ -8,8 +8,8 @@ import org.jetbrains.annotations.Nullable;
 public class Fish extends LivingBeing {
     
     private final String name;
-    private Gender gender;
     private final FishType type;
+    private Gender gender;
     public Fish(Aquarium aquarium, String name, Gender gender, FishType type) {
         super(aquarium);
         this.name = name;
@@ -45,13 +45,10 @@ public class Fish extends LivingBeing {
         if (fish.getGender() == getGender()) {
             if (getType().getSexualityType() == SexualityType.OPPORTUNIST_HERMAPHRODITE) {
                 gender = gender.opposite();
-            }
-            else return;
+            } else return;
         }
         
-        Gender gender = Gender.FEMALE;
-        if (r.nextBoolean()) gender = Gender.MALE;
-        aquarium.addFish(gender, getType());
+        aquarium.addFish(Gender.random(), getType());
         aquarium.log(getName() + " and " + fish.getName() + " bred and gave birth to a new " + getType().toString().toLowerCase());
     }
     public void eat() {
@@ -74,11 +71,11 @@ public class Fish extends LivingBeing {
     private void eatRandomFish() {
         Fish fish = randomFish();
         if (fish == null || fish.getType() == getType() || fish == this) return;
-        fish.damage(6);
+        fish.damage(4);
         hp += 5;
         aquarium.log(getName() + " ate " + fish.getName());
     }
-    private @Nullable Fish randomFish(){
+    private @Nullable Fish randomFish() {
         Fish fish = null;
         if (aquarium.getFishes().size() > 0)
             fish = aquarium.getFishes().get(r.nextInt(aquarium.getFishes().size()));
@@ -105,4 +102,5 @@ public class Fish extends LivingBeing {
                 ", age=" + age +
                 '}';
     }
+    
 }
